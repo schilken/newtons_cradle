@@ -9,16 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'ball_component.dart';
+import 'ball_component.dart';
 import 'wall_body.dart';
 
 class TheWorld extends Box2DComponent implements ContactListener {
   static const int WORLD_POOL_SIZE = 100;
   static const int WORLD_POOL_CONTAINER_SIZE = 10;
-  static const double scale = 10.0;
+  static const double scale = 20.0;
   World world;
 
   List<BallComponent> balls = [];
-  
+  WallBody wall;
+
   Random random = Random();
   Timer impulsTrigger;
   TheWorld() : super(scale: scale, gravity: 0);
@@ -29,16 +31,32 @@ class TheWorld extends Box2DComponent implements ContactListener {
         _gravity, DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     world.setContactListener(this);
 
-    List<double> xpos = [2, 4.1, 6.2, 8.3, 10.4];
+    wall = WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.topCenter);
+    add(wall);
+    add(WallBody(
+        this, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
 
-    for(var x in xpos) {
-      add(BallComponent(this, Vector2(x, 12), Offset(0.0, 0.0)));
+    //List<double> xpos = [2, 4.1, 6.2, 8.3, 10.4];
+    List<BallComponent> balls = [];
+    double x = -4;
+    for (var ix = 0; ix < 5; ix++) {
+      x += 2.1;
+      var ball = BallComponent(this, Vector2(x, 5), Offset(0.0, 0.0));
+      add(ball);
+      balls.add(ball);
+      var djd = DistanceJointDef();
+      djd.frequencyHz = 10.0;
+      djd.dampingRatio = 1.0;
+      djd.initialize(
+          wall.body, balls[ix].body, Vector2(x, 18.0), Vector2(x, 5));
+
+      world.createJoint(djd);
     }
-    // impulsTrigger = Timer(Duration(seconds: 3), () {
-    //   ball3.impulse(Offset(-0.4, 0.0));
-    // });
-    add(WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.topCenter));
-    add(WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
+    impulsTrigger = Timer(Duration(seconds: 3), () {
+      balls[0].impulse(Offset(-0.2, 0.0));
+    });
+
+    //DistanceJoint(world.getPool(), djd);
   }
 
   @override
