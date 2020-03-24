@@ -5,9 +5,11 @@ import 'dart:ui';
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/box2d/box2d_component.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'ball_component.dart';
+import 'wall_body.dart';
 
 class TheWorld extends Box2DComponent implements ContactListener {
   static const int WORLD_POOL_SIZE = 100;
@@ -15,23 +17,28 @@ class TheWorld extends Box2DComponent implements ContactListener {
   static const double scale = 10.0;
   World world;
 
-  BallComponent ball0;
-  BallComponent ball1;
+  List<BallComponent> balls = [];
+  
   Random random = Random();
   Timer impulsTrigger;
   TheWorld() : super(scale: scale, gravity: 0);
 
   void initializeWorld() {
-    final Vector2 _gravity = Vector2.zero();
+    final Vector2 _gravity = Vector2(0, -10);
     world = World.withPool(
         _gravity, DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     world.setContactListener(this);
-    ball0 = BallComponent(this, Vector2(-28, -40), Offset(0.10, 0.133));
-    ball1 = BallComponent(this, Vector2(-28, -40), Offset(0.10, 0.133));
-    impulsTrigger = Timer(Duration(seconds: 7), () {
-      ball1.impulse(Offset(-0.01, 0.01));
-    });
 
+    List<double> xpos = [2, 4.1, 6.2, 8.3, 10.4];
+
+    for(var x in xpos) {
+      add(BallComponent(this, Vector2(x, 12), Offset(0.0, 0.0)));
+    }
+    // impulsTrigger = Timer(Duration(seconds: 3), () {
+    //   ball3.impulse(Offset(-0.4, 0.0));
+    // });
+    add(WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.topCenter));
+    add(WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
   }
 
   @override
@@ -61,22 +68,18 @@ class TheWorld extends Box2DComponent implements ContactListener {
   }
 
   void handleDragUpdate(DragUpdateDetails details) {
-    person0.handleDragUpdate(details);
+//    ball0.handleDragUpdate(details);
   }
 
   void handleDragEnd(DragEndDetails details) {
-    person0.handleDragEnd(details);
+//    ball0.handleDragEnd(details);
   }
 
   @override
   void beginContact(Contact contact) {
-    var fudA = contact.fixtureA.userData as PersonComponent;
-    var fudB = contact.fixtureB.userData as PersonComponent;
+    var fudA = contact.fixtureA.userData as BallComponent;
+    var fudB = contact.fixtureB.userData as BallComponent;
     //print("beginContact ${fudA.infected} ${fudB.infected}");
-    if (fudA.personType == PersonType.infected || fudB.personType == PersonType.infected) {
-      fudA.personType = PersonType.infected;
-      fudB.personType = PersonType.infected;
-    }
   }
 
   @override

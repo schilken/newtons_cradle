@@ -9,12 +9,12 @@ import 'package:flutter/widgets.dart';
 
 import 'the_world.dart';
 
-class DistanceGame extends Game  with TapDetector, PanDetector  {
+class NewtonsGame extends Game  with TapDetector, PanDetector  {
 
   final TheWorld theWorld = TheWorld();
   Size size;
 
-  DistanceGame(Size size) {
+  NewtonsGame(Size size) {
     this.size = size;
 //    print("size: $size");
     theWorld.initializeWorld();

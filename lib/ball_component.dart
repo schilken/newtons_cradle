@@ -9,9 +9,7 @@ import 'package:flutter/painting.dart';
 
 import 'utils.dart';
 
-enum PersonType { infected, insane, sane }
-
-class PersonComponent extends BodyComponent {
+class BallComponent extends BodyComponent {
   static const num PERSON_RADIUS = 1.0;
   static int personCount = 0;
 
@@ -19,14 +17,11 @@ class PersonComponent extends BodyComponent {
   Random random = Random();
   int id;
   Timer impulsTrigger;
-  PersonType personType;
   Offset previousImpulse;
 
-  PersonComponent(box2d, Vector2 position,
-      [Offset initialImpulse, PersonType type = PersonType.insane])
+  BallComponent(box2d, Vector2 position, [Offset initialImpulse])
       : super(box2d) {
     id = personCount++;
-    personType = type;
     //print("initialImpulse $initialImpulse");
     this.previousImpulse = initialImpulse;
     _loadImages();
@@ -50,8 +45,6 @@ class PersonComponent extends BodyComponent {
 
   void _loadImages() {
     images.load("neutral", "icons8-neutral.png");
-    images.load("sad", "icons8-sad.png");
-    images.load("good", "icons8-neutral-yellow.png");
   }
 
   @override
@@ -62,19 +55,7 @@ class PersonComponent extends BodyComponent {
     if (images.isLoading) {
       return;
     }
-    String imageName;
-    switch (personType) {
-      case PersonType.infected:
-        imageName = "sad";
-        break;
-      case PersonType.insane:
-        imageName = "neutral";
-        break;
-      case PersonType.sane:
-        imageName = "good";
-        break;
-    }
-    var image = images.get(imageName);
+    var image = images.get("neutral");
     paintImage(
         canvas: canvas,
         image: image,
@@ -85,12 +66,12 @@ class PersonComponent extends BodyComponent {
 
   void _createBody(Vector2 position) {
     final shape = CircleShape();
-    shape.radius = PersonComponent.PERSON_RADIUS;
+    shape.radius = BallComponent.PERSON_RADIUS;
     shape.p.x = 0.0;
 
     final activeFixtureDef = FixtureDef();
     activeFixtureDef.shape = shape;
-    activeFixtureDef.restitution = 0.0;
+    activeFixtureDef.restitution = 1.0;
     activeFixtureDef.density = 0.99;
     activeFixtureDef.friction = 0.01;
     activeFixtureDef.userData = this;
