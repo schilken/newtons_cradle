@@ -15,6 +15,8 @@ class TheWorld extends Box2DComponent {
   World world;
 
   List<BallComponent> balls = [];
+  List<Vector2> ankerPoints = [];
+
   WallBody wall;
 
   Timer impulsTrigger;
@@ -26,8 +28,7 @@ class TheWorld extends Box2DComponent {
   void initializeWorld() {
     print("initializeWorld viewport: ${viewport.width} ${viewport.height}");
     world = World.withGravity(Vector2(0, -10));
-    wall =
-        WallBody(this, Orientation.landscape, 1.0, 0.05, Alignment.topCenter);
+    wall = WallBody(this, viewport.width, 2, Alignment.topCenter);
     add(wall);
 
     double x = 0 - (numberOfBalls / 2) * distanceBetweenBalls;
@@ -35,12 +36,14 @@ class TheWorld extends Box2DComponent {
       var ball = BallComponent(this, Vector2(x, -viewport.height / 2 + 2));
       add(ball);
       balls.add(ball);
+      ankerPoints.add(Vector2(x, viewport.height/2 - 2));
+      var ballPosition = Vector2(x, -viewport.height / 2 + 2);
       var djd = DistanceJointDef();
       djd.frequencyHz = 10.0;
       djd.dampingRatio = 1.0;
-      djd.initialize(wall.body, balls[ix].body, Vector2(x, viewport.height),
-          Vector2(x, -viewport.height / 2 + 2));
+      djd.initialize(wall.body, balls[ix].body, ankerPoints[ix], ballPosition);
       world.createJoint(djd);
+
       x += distanceBetweenBalls;
     }
     impulsTrigger = Timer(Duration(seconds: 3), () {
@@ -66,11 +69,26 @@ class TheWorld extends Box2DComponent {
     Paint bgPaint = Paint();
     bgPaint.color = Color(0xff33aa33);
     canvas.drawRect(bgRect, bgPaint);
+
+    Paint linePaint = Paint();
+    linePaint.color = Color(0xff888888);
+    for (var ix = 0; ix < numberOfBalls; ix++) {
+      var p1 = worldVector2ToScreenOffset(ankerPoints[ix]);
+      var p2 = worldVector2ToScreenOffset(balls[ix].body.position);
+      //print("p1->p2 $p1->$p2");
+      canvas.drawLine(p1, p2, linePaint);
+    }
     super.render(canvas);
   }
 
-  Offset worldToScreen(Offset position) {
-    return Offset(position.dx/scale-viewport.width/2, viewport.height/2 - position.dy/scale);
+  Offset screenOffsetToWorldOffset(Offset position) {
+    return Offset(position.dx / scale - viewport.width / 2,
+        viewport.height / 2 - position.dy / scale);
+  }
+
+  Offset worldVector2ToScreenOffset(Vector2 position) {
+    return Offset((position.x + viewport.width / 2) * scale,
+        (viewport.height / 2 - position.y) * scale);
   }
 
   void handleTap(Offset position) {
@@ -79,13 +97,10 @@ class TheWorld extends Box2DComponent {
       ball.stop();
     });
 
-    for(var nn = 0; nn < balls.length; nn++) {
-      if(balls[nn].checkTapOverlap(worldToScreen(position))) {
-        pushBalls(nn+1); 
+    for (var nn = 0; nn < balls.length; nn++) {
+      if (balls[nn].checkTapOverlap(screenOffsetToWorldOffset(position))) {
+        pushBalls(nn + 1);
       }
     }
   }
-
-
 }
-
