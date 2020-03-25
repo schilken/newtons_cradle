@@ -69,10 +69,23 @@ class TheWorld extends Box2DComponent {
     super.render(canvas);
   }
 
+  Offset worldToScreen(Offset position) {
+    return Offset(position.dx/scale-viewport.width/2, viewport.height/2 - position.dy/scale);
+  }
+
   void handleTap(Offset position) {
     print("position: $position");
     balls.forEach((ball) {
       ball.stop();
     });
+
+    for(var nn = 0; nn < balls.length; nn++) {
+      if(balls[nn].checkTapOverlap(worldToScreen(position))) {
+        pushBalls(nn+1); 
+      }
+    }
   }
+
+
 }
+

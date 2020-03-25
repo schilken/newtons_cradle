@@ -9,14 +9,14 @@ import 'package:flutter/widgets.dart';
 
 import 'the_world.dart';
 
-class NewtonsGame extends Game  with TapDetector, PanDetector  {
+class NewtonsGame extends BaseGame  with TapDetector  {
 
   final TheWorld theWorld = TheWorld();
   Size size;
 
   NewtonsGame(Size size) {
     this.size = size;
-//    print("size: $size");
+    print("size: $size");
     theWorld.initializeWorld();
   }
 
@@ -38,6 +38,7 @@ class NewtonsGame extends Game  with TapDetector, PanDetector  {
   @override
   void onTapUp(TapUpDetails details) {
     theWorld.handleTap(details.globalPosition);
+    super.onTapUp(details);
   }
 
 }

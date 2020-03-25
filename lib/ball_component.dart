@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:box2d_flame/box2d.dart' hide Timer;
+import 'package:box2d_flame/box2d.dart' hide Timer, Position;
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/components/mixins/tapable.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
 import 'utils.dart';
 
-class BallComponent extends BodyComponent {
+class BallComponent extends BodyComponent with Tapable {
   static const num PERSON_RADIUS = 1.0;
   static int ballCount = 0;
 
@@ -96,5 +97,10 @@ class BallComponent extends BodyComponent {
   @override
   String toString() {
     return "linearVelocity ${body.linearVelocity} angularVelocity: ${body.angularVelocity}";
+  }
+  
+  Rect toRect() {
+    var rect = Rect.fromCircle(center: Offset(body.position.x, body.position.y), radius: BallComponent.PERSON_RADIUS);
+    return rect; 
   }
 }
