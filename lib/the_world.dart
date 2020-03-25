@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'ball_component.dart';
-import 'ball_component.dart';
 import 'wall_body.dart';
 
 class TheWorld extends Box2DComponent implements ContactListener {
@@ -25,35 +24,39 @@ class TheWorld extends Box2DComponent implements ContactListener {
   Timer impulsTrigger;
   TheWorld() : super(scale: scale, gravity: 0);
 
+  static const distanceBetweenBalls = 2.01;
+  static const numberOfBalls = 5;
+
   void initializeWorld() {
     final Vector2 _gravity = Vector2(0, -10);
     world = World.withPool(
         _gravity, DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     world.setContactListener(this);
+    print("viewport: ${viewport.width} ${viewport.height}");
 
-    wall = WallBody(this, Orientation.portrait, 1.0, 0.05, Alignment.topCenter);
+    wall =
+        WallBody(this, Orientation.landscape, 1.0, 0.05, Alignment.topCenter);
     add(wall);
-    add(WallBody(
-        this, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
-
-    //List<double> xpos = [2, 4.1, 6.2, 8.3, 10.4];
+    // add(WallBody(
+    //     this, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
     List<BallComponent> balls = [];
-    double x = -4;
-    for (var ix = 0; ix < 5; ix++) {
-      x += 2.1;
-      var ball = BallComponent(this, Vector2(x, 5), Offset(0.0, 0.0));
+    double x = 0 - (numberOfBalls/2) * distanceBetweenBalls;
+    for (var ix = 0; ix < numberOfBalls; ix++) {
+      var ball = BallComponent(this, Vector2(x, -viewport.height/2+2), Offset(0.0, 0.0));
       add(ball);
       balls.add(ball);
       var djd = DistanceJointDef();
       djd.frequencyHz = 10.0;
       djd.dampingRatio = 1.0;
       djd.initialize(
-          wall.body, balls[ix].body, Vector2(x, 18.0), Vector2(x, 5));
-
+          wall.body, balls[ix].body, Vector2(x, viewport.height), Vector2(x, -viewport.height/2+2));
       world.createJoint(djd);
+      x += distanceBetweenBalls;
     }
     impulsTrigger = Timer(Duration(seconds: 3), () {
       balls[0].impulse(Offset(-0.2, 0.0));
+      balls[1].impulse(Offset(-0.2, 0.0));
+      balls[2].impulse(Offset(-0.2, 0.0));
     });
 
     //DistanceJoint(world.getPool(), djd);
