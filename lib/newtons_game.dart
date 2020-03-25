@@ -37,23 +37,7 @@ class NewtonsGame extends Game  with TapDetector, PanDetector  {
 
   @override
   void onTapUp(TapUpDetails details) {
-    theWorld.handleTap(details.globalPosition, down: true);
+    theWorld.handleTap(details.globalPosition);
   }
 
-  @override
-  void onTapDown(TapDownDetails details) {
-    theWorld.handleTap(details.globalPosition, down: false);
-  }
-
-  @override
-  void onPanUpdate(DragUpdateDetails details) {
-    theWorld.handleDragUpdate(details);
-  }
-
-  @override
-  void onPanEnd(DragEndDetails details) {
-    theWorld.handleDragEnd(details);
-  }
-
-  
 }

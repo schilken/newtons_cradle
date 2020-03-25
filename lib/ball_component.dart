@@ -11,36 +11,19 @@ import 'utils.dart';
 
 class BallComponent extends BodyComponent {
   static const num PERSON_RADIUS = 1.0;
-  static int personCount = 0;
+  static int ballCount = 0;
 
   ImagesLoader images = ImagesLoader();
   Random random = Random();
   int id;
   Timer impulsTrigger;
-  Offset previousImpulse;
 
-  BallComponent(box2d, Vector2 position, [Offset initialImpulse])
+  BallComponent(box2d, Vector2 position)
       : super(box2d) {
-    id = personCount++;
+    id = ballCount++;
     //print("initialImpulse $initialImpulse");
-    this.previousImpulse = initialImpulse;
     _loadImages();
     _createBody(position);
-    if (this.previousImpulse != null) {
-      impulse(this.previousImpulse);
-    }
-    // if (personType == PersonType.sane && initialImpulse != null) {
-    //   impulsTrigger = Timer(Duration(seconds: 40), () {
-    //     stop();
-    //     impulse(-previousImpulse);
-    //   });
-    // }
-    if (random.nextInt(100) < 5) {
-      impulsTrigger =
-          Timer.periodic(Duration(seconds: random.nextInt(20) + 10), (_) {
-        impulse(Offset(random.nextDouble() * 0.03, random.nextDouble() * 0.03));
-      });
-    }
   }
 
   void _loadImages() {
@@ -80,7 +63,6 @@ class BallComponent extends BodyComponent {
     activeBodyDef.linearVelocity = Vector2(0.0, 0.0);
     activeBodyDef.position = position;
     activeBodyDef.type = BodyType.DYNAMIC;
-    //activeBodyDef.bullet = true;
     BodyDef bodyDef = activeBodyDef;
 
     this.body = world.createBody(bodyDef)
@@ -96,7 +78,6 @@ class BallComponent extends BodyComponent {
   }
 
   void impulse(Offset velocity) {
-    previousImpulse = velocity;
     //print("impulse on person $id ${velocity.dx}/${velocity.dy}}");
     Vector2 force = Vector2(velocity.dx, velocity.dy)..scale(100.0);
     body.applyLinearImpulse(force, center, true);
