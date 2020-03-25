@@ -7,8 +7,6 @@ class WallBody extends BodyComponent {
   double height;
   Alignment alignment;
 
-  Size size;
-
   WallBody(
       Box2DComponent box, this.width, this.height, this.alignment)
       : super(box) {

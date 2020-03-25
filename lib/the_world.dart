@@ -36,14 +36,13 @@ class TheWorld extends Box2DComponent {
       var ball = BallComponent(this, Vector2(x, -viewport.height / 2 + 2));
       add(ball);
       balls.add(ball);
-      ankerPoints.add(Vector2(x, viewport.height/2 - 2));
+      ankerPoints.add(Vector2(x, viewport.height / 2 - 2));
       var ballPosition = Vector2(x, -viewport.height / 2 + 2);
       var djd = DistanceJointDef();
       djd.frequencyHz = 10.0;
       djd.dampingRatio = 1.0;
       djd.initialize(wall.body, balls[ix].body, ankerPoints[ix], ballPosition);
       world.createJoint(djd);
-
       x += distanceBetweenBalls;
     }
     impulsTrigger = Timer(Duration(seconds: 3), () {
@@ -55,11 +54,6 @@ class TheWorld extends Box2DComponent {
     for (var nn = 0; nn < count; nn++) {
       balls[nn].impulse(Offset(-0.2, 0.0));
     }
-  }
-
-  @override
-  void update(t) {
-    super.update(t);
   }
 
   @override
