@@ -24,7 +24,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
   Timer impulsTrigger;
   TheWorld() : super(scale: scale, gravity: 0);
 
-  static const distanceBetweenBalls = 2.01;
+  static const distanceBetweenBalls = 2.1;
   static const numberOfBalls = 5;
 
   void initializeWorld() {
