@@ -12,11 +12,8 @@ import 'the_world.dart';
 class NewtonsGame extends BaseGame  with TapDetector  {
 
   final TheWorld theWorld = TheWorld();
-  Size size;
 
-  NewtonsGame(Size size) {
-    this.size = size;
-    print("size: $size");
+  NewtonsGame() {
     theWorld.initializeWorld();
   }
 
