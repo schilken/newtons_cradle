@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/painting.dart';
 import 'ball_component.dart';
 import 'wall_body.dart';
 
-class TheWorld extends Box2DComponent {
+class TheWorld extends Box2DComponent implements ContactListener {
   static const double scale = 20.0;
   World world;
 
@@ -18,6 +19,7 @@ class TheWorld extends Box2DComponent {
   List<Vector2> ankerPoints = [];
 
   WallBody wall;
+  //FlameAudio audio = FlameAudio();
 
   Timer impulsTrigger;
   TheWorld() : super(scale: scale, gravity: 0);
@@ -48,6 +50,7 @@ class TheWorld extends Box2DComponent {
     impulsTrigger = Timer(Duration(seconds: 3), () {
       pushBalls(3);
     });
+    world.setContactListener(this);
   }
 
   void pushBalls(int count) {
@@ -97,4 +100,21 @@ class TheWorld extends Box2DComponent {
       }
     }
   }
+
+  @override
+  void beginContact(Contact contact) {
+//    var fudA = contact.fixtureA.userData as BallComponent;
+//    var fudB = contact.fixtureB.userData as BallComponent;
+//    print("beginContact");
+    Flame.audio.play("click.wav");
+  }
+
+  @override
+  void endContact(Contact contact) {}
+
+  @override
+  void postSolve(Contact contact, ContactImpulse impulse) {}
+
+  @override
+  void preSolve(Contact contact, Manifold oldManifold) {}
 }
