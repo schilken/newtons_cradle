@@ -85,7 +85,5 @@ class TheWorld extends Box2DComponent {
       }
     }
   }
-
-
 }
 

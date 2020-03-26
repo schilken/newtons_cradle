@@ -29,6 +29,7 @@ class BallComponent extends BodyComponent with Tapable {
 
   void _loadImages() {
     images.load("neutral", "icons8-neutral.png");
+    images.load("ball", "black-ball.png");
   }
 
   @override
@@ -39,7 +40,7 @@ class BallComponent extends BodyComponent with Tapable {
     if (images.isLoading) {
       return;
     }
-    var image = images.get("neutral");
+    var image = images.get("ball");
     paintImage(
         canvas: canvas,
         image: image,
@@ -47,6 +48,17 @@ class BallComponent extends BodyComponent with Tapable {
         flipHorizontally: false,
         fit: BoxFit.contain);
   }
+
+  // void renderCircle(Canvas canvas, Offset center, double radius) {
+  //   canvas.save();
+  //   //Move the canvas point 0,0 to the top left edge of our ball
+  //   canvas.translate(center.dx, center.dy);
+  //   //Simply draw the circle
+  //   Paint paint = Paint();
+  //   paint.color = Color(0xffaaaaaa);
+  //   canvas.drawCircle(Offset(0, 0), radius, paint);
+  //   canvas.restore();
+  // }
 
   void _createBody(Vector2 position) {
     final shape = CircleShape();
