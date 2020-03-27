@@ -106,7 +106,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
 //    var fudA = contact.fixtureA.userData as BallComponent;
 //    var fudB = contact.fixtureB.userData as BallComponent;
 //    print("beginContact");
-    Flame.audio.play("click.wav");
+//    Flame.audio.play("click.wav"); // doesn't work yet with Flutter for Web
   }
 
   @override
