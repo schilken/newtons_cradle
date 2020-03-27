@@ -1,16 +1,26 @@
 # newtons_cradle
 
-A new Flutter project.
+A simulation of Newton's cradle in Flutter using flame engine and Box2D.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Prepare for local run and build:
+```
+flutter channel master
+flutter upgrade
+flutter config --enable-web
+```
 
-A few resources to get you started if this is your first Flutter project:
+Run in Chrome:
+`flutter run -d Chrome`
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Build for deployment:
+`flutter build web`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Deploy to web server: copy contents of folder build/web:
+
+The doc-folder contains the contents of such a build for web and is published as github pages.
+You find it [here](https://schilken.github.io/newtons_cradle).
+Do a refresh of the page to start the simulation.
+
+<img src="images_for_readme/newtons_cradle.gif"/>
