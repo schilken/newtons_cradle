@@ -28,7 +28,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
 
   void initializeWorld() {
     world = World.withGravity(Vector2(0, -10));
-    wall = WallBody(this, viewport.width, 2, Alignment.topCenter);
+    wall = WallBody(this, viewport.width-4, 1.5, Offset(0, -0.9));
     add(wall);
     initializeBalls();
     impulsTrigger = Timer(Duration(seconds: 3), () {

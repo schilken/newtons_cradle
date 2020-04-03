@@ -9,10 +9,9 @@ import 'package:flutter/widgets.dart';
 
 import 'the_world.dart';
 
-class NewtonsGame extends BaseGame  with TapDetector  {
-
+class NewtonsGame extends BaseGame with TapDetector {
   TheWorld theWorld;
-    bool debounceActive = false;
+  bool debounceActive = false;
 
   @override
   void render(Canvas canvas) {
@@ -42,5 +41,4 @@ class NewtonsGame extends BaseGame  with TapDetector  {
     theWorld?.handleTap(details.globalPosition);
     super.onTapUp(details);
   }
-
 }

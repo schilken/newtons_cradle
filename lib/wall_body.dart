@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 class WallBody extends BodyComponent {
   double width;
   double height;
-  Alignment alignment;
+  Offset offset;
 
   WallBody(
-      Box2DComponent box, this.width, this.height, this.alignment)
+      Box2DComponent box, this.width, this.height, this.offset)
       : super(box) {
     _createBody();
   }
 
   void _createBody() {
-    double x = alignment.x * (box.viewport.width - width)/2;
-    double y = (-alignment.y) * (box.viewport.height - height)/2;
+    double x = offset.dx * (box.viewport.width - width)/2;
+    double y = (-offset.dy) * (box.viewport.height - height)/2;
     print("WallBody: x/y $x/$y");
 
     final shape = PolygonShape();
