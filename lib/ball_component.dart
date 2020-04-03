@@ -22,7 +22,6 @@ class BallComponent extends BodyComponent with Tapable {
   }
 
   void _loadImages() {
-    images.load("neutral", "icons8-neutral.png");
     images.load("ball", "black-ball.png");
   }
 
