@@ -11,30 +11,35 @@ import 'the_world.dart';
 
 class NewtonsGame extends BaseGame  with TapDetector  {
 
-  final TheWorld theWorld = TheWorld();
-
-  NewtonsGame() {
-    theWorld.initializeWorld();
-  }
+  TheWorld theWorld;
+    bool debounceActive = false;
 
   @override
   void render(Canvas canvas) {
-    theWorld.render(canvas);
+    theWorld?.render(canvas);
   }
 
   @override
   void update(double t) {
-    theWorld.update(t);
+    theWorld?.update(t);
   }
 
   @override
-  void resize(Size size) {
-    theWorld.resize(size);
+  void resize(Size size) async {
+    print("resize $size");
+    if (debounceActive) return;
+    debounceActive = true;
+    await Future.delayed(Duration(seconds: 1));
+    debounceActive = false;
+    print("really resize");
+    super.resize(size);
+    theWorld = TheWorld();
+    theWorld.initializeWorld();
   }
 
   @override
   void onTapUp(TapUpDetails details) {
-    theWorld.handleTap(details.globalPosition);
+    theWorld?.handleTap(details.globalPosition);
     super.onTapUp(details);
   }
 

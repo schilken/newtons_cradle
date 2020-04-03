@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/box2d/box2d_component.dart';
-import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -15,8 +14,8 @@ class TheWorld extends Box2DComponent implements ContactListener {
   static const double scale = 20.0;
   World world;
 
-  List<BallComponent> balls = [];
-  List<Vector2> ankerPoints = [];
+  List<BallComponent> balls;
+  List<Vector2> ankerPoints;
 
   WallBody wall;
   //FlameAudio audio = FlameAudio();
@@ -28,29 +27,35 @@ class TheWorld extends Box2DComponent implements ContactListener {
   static const numberOfBalls = 5;
 
   void initializeWorld() {
-    print("initializeWorld viewport: ${viewport.width} ${viewport.height}");
     world = World.withGravity(Vector2(0, -10));
     wall = WallBody(this, viewport.width, 2, Alignment.topCenter);
     add(wall);
+    initializeBalls();
+    impulsTrigger = Timer(Duration(seconds: 3), () {
+      pushBalls(3);
+    });
+    world.setContactListener(this);
+  }
 
+  void initializeBalls() {
+    print(
+        "initializeWorld viewport: ${viewport.width} ${viewport.height} ${window.devicePixelRatio} ");
+    balls = [];
+    ankerPoints = [];
     double x = 0 - (numberOfBalls / 2) * distanceBetweenBalls;
     for (var ix = 0; ix < numberOfBalls; ix++) {
-      var ball = BallComponent(this, Vector2(x, -viewport.height / 2 + 2));
+      var ballPosition = Vector2(x, -viewport.height / 2 + 4);
+      var ball = BallComponent(this, ballPosition);
       add(ball);
       balls.add(ball);
       ankerPoints.add(Vector2(x, viewport.height / 2 - 2));
-      var ballPosition = Vector2(x, -viewport.height / 2 + 2);
       var djd = DistanceJointDef();
-      djd.frequencyHz = 10.0;
+      //djd.frequencyHz = 10.0;
       djd.dampingRatio = 1.0;
       djd.initialize(wall.body, balls[ix].body, ankerPoints[ix], ballPosition);
       world.createJoint(djd);
       x += distanceBetweenBalls;
     }
-    impulsTrigger = Timer(Duration(seconds: 3), () {
-      pushBalls(3);
-    });
-    world.setContactListener(this);
   }
 
   void pushBalls(int count) {
