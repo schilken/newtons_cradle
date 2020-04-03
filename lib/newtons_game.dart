@@ -32,6 +32,7 @@ class NewtonsGame extends BaseGame with TapDetector {
     debounceActive = false;
     print("really resize");
     super.resize(size);
+    print("window.physicalSize ${window.physicalSize}"); 
     theWorld = TheWorld();
     theWorld.initializeWorld();
   }

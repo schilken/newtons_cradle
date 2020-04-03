@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'ball_component.dart';
-import 'wall_body.dart';
+import 'dummy_body.dart';
 
 class TheWorld extends Box2DComponent implements ContactListener {
   static const double scale = 20.0;
@@ -17,19 +17,20 @@ class TheWorld extends Box2DComponent implements ContactListener {
   List<BallComponent> balls;
   List<Vector2> ankerPoints;
 
-  WallBody wall;
+  DummyBody wall;
   //FlameAudio audio = FlameAudio();
 
   Timer impulsTrigger;
-  TheWorld() : super(scale: scale, gravity: 0);
+  TheWorld() : super(dimensions: window.physicalSize, scale: scale, gravity: 0);
 
   static const distanceBetweenBalls = 2.1;
   static const numberOfBalls = 5;
 
   void initializeWorld() {
     world = World.withGravity(Vector2(0, -10));
-    wall = WallBody(this, viewport.width-4, 1.5, Offset(0, -0.9));
-    add(wall);
+    wall = DummyBody(this);
+
+    // add(wall);
     initializeBalls();
     impulsTrigger = Timer(Duration(seconds: 3), () {
       pushBalls(3);
@@ -40,6 +41,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
   void initializeBalls() {
     print(
         "initializeWorld viewport: ${viewport.width} ${viewport.height} ${window.devicePixelRatio} ");
+
     balls = [];
     ankerPoints = [];
     double x = 0 - (numberOfBalls / 2) * distanceBetweenBalls;
@@ -72,12 +74,17 @@ class TheWorld extends Box2DComponent implements ContactListener {
     bgPaint.color = Color(0xff33aa33);
     canvas.drawRect(bgRect, bgPaint);
 
+    Rect barRect =
+        Rect.fromLTWH(40, 40, viewport.width * viewport.scale - 80, 40);
+    Paint barPaint = Paint();
+    barPaint.color = Color(0xff888888);
+    canvas.drawRect(barRect, barPaint);
+
     Paint linePaint = Paint();
     linePaint.color = Color(0xff888888);
     for (var ix = 0; ix < numberOfBalls; ix++) {
       var p1 = worldVector2ToScreenOffset(ankerPoints[ix]);
       var p2 = worldVector2ToScreenOffset(balls[ix].body.position);
-      //print("p1->p2 $p1->$p2");
       canvas.drawLine(p1, p2, linePaint);
     }
     super.render(canvas);

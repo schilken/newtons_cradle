@@ -15,8 +15,7 @@ class BallComponent extends BodyComponent with Tapable {
   ImagesLoader images = ImagesLoader();
   Timer impulsTrigger;
 
-  BallComponent(box2d, Vector2 position)
-      : super(box2d) {
+  BallComponent(box2d, Vector2 position) : super(box2d) {
     _loadImages();
     _createBody(position);
   }
@@ -25,28 +24,25 @@ class BallComponent extends BodyComponent with Tapable {
     images.load("ball", "black-ball.png");
   }
 
-  @override
-  void renderCircle(Canvas canvas, Offset center, double radius) {
+  Offset worldVector2ToScreenOffset(Vector2 position) {
+    return Offset((position.x + viewport.width / 2) * 20,
+        (viewport.height / 2 - position.y) * 20);
+  }
+
+  void render(Canvas canvas) {
     if (images.isLoading) {
       return;
     }
+    Fixture fixture = body.getFixtureList();
+    final CircleShape circle = fixture.getShape();
+    Offset center = worldVector2ToScreenOffset(body.position);
     paintImage(
         canvas: canvas,
         image: images.get("ball"),
-        rect: Rect.fromCircle(center: center, radius: radius),
+        rect: Rect.fromCircle(
+            center: center, radius: circle.radius * viewport.scale),
         fit: BoxFit.contain);
   }
-
-  // void renderCircle(Canvas canvas, Offset center, double radius) {
-  //   canvas.save();
-  //   //Move the canvas point 0,0 to the top left edge of our ball
-  //   canvas.translate(center.dx, center.dy);
-  //   //Simply draw the circle
-  //   Paint paint = Paint();
-  //   paint.color = Color(0xffaaaaaa);
-  //   canvas.drawCircle(Offset(0, 0), radius, paint);
-  //   canvas.restore();
-  // }
 
   void _createBody(Vector2 position) {
     final shape = CircleShape();
@@ -59,7 +55,7 @@ class BallComponent extends BodyComponent with Tapable {
     fixtureDef.density = 0.99;
     fixtureDef.friction = 0.01;
     fixtureDef.userData = this;
-    
+
     final bodyDef = BodyDef();
     bodyDef.linearVelocity = Vector2(0.0, 0.0);
     bodyDef.position = position;
@@ -88,9 +84,11 @@ class BallComponent extends BodyComponent with Tapable {
   String toString() {
     return "linearVelocity ${body.linearVelocity}";
   }
-  
+
   Rect toRect() {
-    var rect = Rect.fromCircle(center: Offset(body.position.x, body.position.y), radius: BallComponent.PERSON_RADIUS);
-    return rect; 
+    var rect = Rect.fromCircle(
+        center: Offset(body.position.x, body.position.y),
+        radius: BallComponent.PERSON_RADIUS);
+    return rect;
   }
 }
