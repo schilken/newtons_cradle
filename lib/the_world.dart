@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -114,13 +115,13 @@ class TheWorld extends Box2DComponent implements ContactListener {
   }
 
   @override
-  void beginContact(Contact contact) {
+  void beginContact(Contact contact) async {
 //    var fudA = contact.fixtureA.userData as BallComponent;
 //    var fudB = contact.fixtureB.userData as BallComponent;
 //    print("beginContact");
-//    Flame.audio.play("click.wav"); // doesn't work yet with Flutter for Web
+    await Flame.audio.play("click.wav"); 
   }
-
+ 
   @override
   void endContact(Contact contact) {}
 
