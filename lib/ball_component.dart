@@ -21,7 +21,7 @@ class BallComponent extends BodyComponent with Tapable {
   }
 
   void _loadImages() {
-    images.load("ball", "black-ball.png");
+    images.load("ball", "black-ball-smaller.png");
   }
 
   Offset worldVector2ToScreenOffset(Vector2 position) {
