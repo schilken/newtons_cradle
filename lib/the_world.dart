@@ -24,7 +24,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
   Timer impulsTrigger;
   TheWorld() : super(dimensions: window.physicalSize, scale: scale, gravity: 0);
 
-  static const distanceBetweenBalls = 2.1;
+  static const distanceBetweenBalls = 2.02;
   static const numberOfBalls = 5;
 
   void initializeWorld() {
@@ -119,7 +119,7 @@ class TheWorld extends Box2DComponent implements ContactListener {
 //    var fudA = contact.fixtureA.userData as BallComponent;
 //    var fudB = contact.fixtureB.userData as BallComponent;
 //    print("beginContact");
-    await Flame.audio.play("click.wav"); 
+    await Flame.audio.play("billiard-tick.wav"); 
   }
  
   @override
