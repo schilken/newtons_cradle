@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart' hide Timer;
@@ -27,16 +28,17 @@ class TheWorld extends Box2DComponent implements ContactListener {
   static const distanceBetweenBalls = 2.02;
   static const numberOfBalls = 5;
 
-  void initializeWorld() {
+  Future<void> initializeWorld() async {
     world = World.withGravity(Vector2(0, -10));
     wall = DummyBody(this);
 
     // add(wall);
     initializeBalls();
     impulsTrigger = Timer(Duration(seconds: 3), () {
-      pushBalls(3);
+      pushBalls(2);
     });
     world.setContactListener(this);
+    await Flame.audio.load("billiard-tick.wav");
   }
 
   void initializeBalls() {
@@ -75,8 +77,11 @@ class TheWorld extends Box2DComponent implements ContactListener {
     bgPaint.color = Color(0xff33aa33);
     canvas.drawRect(bgRect, bgPaint);
 
-    Rect barRect =
-        Rect.fromLTWH(40, 40, viewport.width * viewport.scale - 80, 40);
+    Rect barRect = Rect.fromLTRB(
+        worldVector2ToScreenOffset(ankerPoints[0]).dx - 20,
+        20,
+        worldVector2ToScreenOffset(ankerPoints[4]).dx + 20,
+        40);
     Paint barPaint = Paint();
     barPaint.color = Color(0xff888888);
     canvas.drawRect(barRect, barPaint);
@@ -116,12 +121,19 @@ class TheWorld extends Box2DComponent implements ContactListener {
 
   @override
   void beginContact(Contact contact) async {
-//    var fudA = contact.fixtureA.userData as BallComponent;
-//    var fudB = contact.fixtureB.userData as BallComponent;
+    var ballA = contact.fixtureA.userData as BallComponent;
+    var ballB = contact.fixtureB.userData as BallComponent;
 //    print("beginContact");
-    await Flame.audio.play("billiard-tick.wav"); 
+    var vA = ballA.body.linearVelocity;
+    var vB = ballB.body.linearVelocity;
+    var vDiff = vA - vB;
+    if (vDiff.length2 > 3) {
+      var volume = min(vDiff.length2 / 40, 1.0);
+      //print("${vA.length2} ${vB.length2} ${vDiff.length2} $volume");
+      Flame.audio.play("billiard-tick.wav", volume: volume);
+    }
   }
- 
+
   @override
   void endContact(Contact contact) {}
 
